@@ -28,8 +28,9 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     io.emit('welcome', 'A user left');
   });
-  socket.on('location', ({ longitude, latitude }) => {
-    io.emit('location', { longitude, latitude });
+  socket.on('location', ({ longitude, latitude }, callback) => {
+    io.emit('location', `https://google.com/maps?q=${latitude},${longitude}`);
+    callback();
   });
 });
 
