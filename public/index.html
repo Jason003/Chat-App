@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/chat.js"></script>
   </head>
   <body>
-    <h1>ChatApp</h1>
+    <h1 style="text-align:center">Type Something And Submit</h1>
+    <form id="message-form" style="text-align:center">
+      <textarea name="message" id="messageTextarea"></textarea>
+      <br />
+      <button id="submitButton">Submit</button>
+    </form>
+    <button id="sendLocationButton">Send Location</button>
+    <script src="./js/chat.js"></script>
   </body>
 </html>

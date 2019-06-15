@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bad-words": "^3.0.2",
     "express": "^4.17.1",
+    "jquery": "^3.4.1",
     "nodemon": "^1.19.1",
     "socket.io": "^2.2.0"
   }
