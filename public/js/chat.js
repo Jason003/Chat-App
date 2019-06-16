@@ -24,7 +24,10 @@ socket.on('message', message => {
 });
 
 socket.on('location', location => {
-  const html = Mustache.render(locationTemplate, { location });
+  const html = Mustache.render(locationTemplate, {
+    location: location.text,
+    createdAt: location.createdAt
+  });
   $messages.append(html);
 });
 
