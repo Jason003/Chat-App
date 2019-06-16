@@ -18,8 +18,14 @@ app.use(express.static(publicDirectoryPath));
 
 io.on('connection', socket => {
   console.log('New WebSocket Connection...');
-  socket.emit('welcome', 'Welcome!');
-  socket.broadcast.emit('welcome', 'A new user entered');
+
+  socket.on('join', ({ username, room }) => {
+    socket.join(room);
+    socket.emit('welcome', message('Welcome!'));
+    socket.broadcast
+      .to(room)
+      .emit('welcome', message(`${username} has joined`));
+  });
   socket.on('message', (text, callback) => {
     if (filter.isProfane(text)) {
       return callback('Profane if not allowed!');
@@ -28,7 +34,7 @@ io.on('connection', socket => {
     callback();
   });
   socket.on('disconnect', () => {
-    io.emit('welcome', 'A user left');
+    io.emit('welcome', message('A user left'));
   });
   socket.on('location', ({ longitude, latitude }, callback) => {
     io.emit(

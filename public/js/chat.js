@@ -10,17 +10,27 @@ const messageTemplate = $('#message-template').html();
 const locationTemplate = $('#location-template').html();
 console.log(messageTemplate);
 
-socket.on('welcome', message => {
-  console.log(message);
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true
 });
 
-socket.on('message', message => {
-  console.log(message);
-  const html = Mustache.render(messageTemplate, {
+const showMessage = (template, message) => {
+  const html = Mustache.render(template, {
     message: message.text,
     createdAt: message.createdAt
   });
   $messages.append(html);
+};
+
+socket.emit('join', { username, room });
+
+socket.on('welcome', message => {
+  showMessage(messageTemplate, message);
+});
+
+socket.on('message', message => {
+  console.log(message);
+  showMessage(messageTemplate, message);
 });
 
 socket.on('location', location => {
