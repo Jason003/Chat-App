@@ -4,6 +4,8 @@ const http = require('http');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 
+const { message } = require('./utils/messages');
+
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
@@ -18,11 +20,11 @@ io.on('connection', socket => {
   console.log('New WebSocket Connection...');
   socket.emit('welcome', 'Welcome!');
   socket.broadcast.emit('welcome', 'A new user entered');
-  socket.on('message', (message, callback) => {
-    if (filter.isProfane(message)) {
+  socket.on('message', (text, callback) => {
+    if (filter.isProfane(text)) {
       return callback('Profane if not allowed!');
     }
-    io.emit('message', message);
+    io.emit('message', message(text));
     callback();
   });
   socket.on('disconnect', () => {
