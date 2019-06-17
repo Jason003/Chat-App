@@ -4,41 +4,52 @@ const $messageTextarea = $('#messageTextarea');
 const $sendLocationButton = $('#sendLocationButton');
 const $submitButton = $('#submitButton');
 const $messages = $('#messages');
+const $sidebar = $('#sidebar');
 
 // Templates
 const messageTemplate = $('#message-template').html();
 const locationTemplate = $('#location-template').html();
-console.log(messageTemplate);
+const sidebarTemplate = $('#sidebar-template').html();
 
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true
 });
 
 const showMessage = (template, message) => {
+  const { text, createdAt, username } = message;
   const html = Mustache.render(template, {
-    message: message.text,
-    createdAt: message.createdAt
+    message: text,
+    createdAt,
+    username
   });
   $messages.append(html);
 };
 
-socket.emit('join', { username, room });
+socket.emit('join', { username, room }, error => {
+  if (error) {
+    alert(error);
+    location.href = '/';
+  }
+});
 
 socket.on('welcome', message => {
   showMessage(messageTemplate, message);
 });
 
 socket.on('message', message => {
-  console.log(message);
   showMessage(messageTemplate, message);
 });
 
 socket.on('location', location => {
-  const html = Mustache.render(locationTemplate, {
-    location: location.text,
-    createdAt: location.createdAt
+  showMessage(locationTemplate, location);
+});
+
+socket.on('roomData', ({ room, users }) => {
+  const html = Mustache.render(sidebarTemplate, {
+    room,
+    users
   });
-  $messages.append(html);
+  $sidebar.html(html);
 });
 
 $messageForm.submit(e => {
@@ -57,9 +68,8 @@ $messageForm.submit(e => {
     $submitButton.removeAttr('disabled');
     $messageTextarea.focus();
     if (error) {
-      return console.log(error);
+      return alert(error);
     }
-    console.log('Delivered Successfully!');
   });
 });
 
